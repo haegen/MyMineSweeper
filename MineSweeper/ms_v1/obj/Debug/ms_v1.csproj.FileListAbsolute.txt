@@ -1,0 +1,9 @@
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\bin\Debug\ms_v1.exe.config
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\bin\Debug\ms_v1.exe
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\bin\Debug\ms_v1.pdb
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.csprojResolveAssemblyReference.cache
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.MainForm.resources
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.Properties.Resources.resources
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.csproj.GenerateResource.Cache
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.exe
+c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.pdb
