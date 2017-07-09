@@ -31,6 +31,9 @@ namespace ms_v1
         // spezific character for the mine
         char mineCharacter = '#';
 
+        TextBox tbMinesAmount;
+        TextBox tbMinesCounter;
+        Button btnStart;
         Button[,] playingField;
         Button[,] playingFieldCoverUp;
 
@@ -48,6 +51,34 @@ namespace ms_v1
         {
             this.Controls.Clear();
 
+            // evtl in andere methode auslagern
+            btnStart = new Button();
+            btnStart.Location = new Point(170, 12);
+            btnStart.Click += new EventHandler(btnStart_Click);
+            this.Controls.Add(btnStart);
+
+            panel1 = new Panel();
+            panel1.Location = new Point(12, 77);
+            this.Controls.Add(panel1);
+
+            tbMinesAmount = new TextBox();
+            tbMinesAmount.ReadOnly = true;
+            tbMinesAmount.Location = new Point(327, 12);
+            this.Controls.Add(tbMinesAmount);
+
+            tbMinesCounter = new TextBox();
+            tbMinesCounter.ReadOnly = true;
+            tbMinesCounter.Location = new Point(12, 12);
+            this.Controls.Add(tbMinesCounter);
+
+            panel1.AutoSize = true;
+
+            //
+
+            // ???
+            xLocation = panel1.Location.X;
+            yLocation = panel1.Location.Y;
+
             playingField = new Button[width, height];
             playingFieldCoverUp = new Button[width, height];
 
@@ -55,6 +86,9 @@ namespace ms_v1
             AddPlayingField();
             DistributeMines();
             DistributeHints();
+
+            tbMinesAmount.Text = minesAmount.ToString();
+            tbMinesCounter.Text = "0";
         }
 
         private void DistributeHints()
@@ -136,7 +170,7 @@ namespace ms_v1
                     btn.TabStop = false;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
 
-                    this.Controls.Add(btn);
+                    panel1.Controls.Add(btn);
                     playingField[column, row] = btn;
 
                     x += buttonSize;
@@ -163,7 +197,7 @@ namespace ms_v1
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.MouseDown += new MouseEventHandler(btn_Click);
 
-                    this.Controls.Add(btn);
+                    panel1.Controls.Add(btn);
                     playingFieldCoverUp[column, row] = btn;
 
                     x += buttonSize;
@@ -190,6 +224,8 @@ namespace ms_v1
                     obj.Text = String.Empty;
                     markedMines--;
                 }
+
+                tbMinesCounter.Text = markedMines.ToString();
             }
 
             if (e.Button == MouseButtons.Left)
@@ -199,7 +235,7 @@ namespace ms_v1
                     obj.Visible = false;
                 }
 
-                if (getPlayingFieldButton(obj.Location).Text.Equals(mineCharacter.ToString()))
+                if (getPlayingFieldButton(obj.Location).Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(mineCharacter.ToString()))
                 {
                     if (MessageBox.Show("BOOM!\n\nRestart?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
@@ -211,6 +247,14 @@ namespace ms_v1
                     }
                 }
             }
+
+            if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
+                MessageBox.Show("You're Won!");
+        }
+
+        private void btnStart_Click(Object sender, EventArgs e)
+        {
+            initGame();
         }
 
         private Button getPlayingFieldButton(Point p)
@@ -232,6 +276,46 @@ namespace ms_v1
             return obj;
         }
 
+        private bool isWinner()
+        {
+            bool winner = false;
 
+            if (markedMines == minesAmount)
+            {
+                for (int row = 0; row < height; row++)
+                {
+                    for (int column = 0; column < width; column++)
+                    {
+                        if (playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
+                        {
+                            if (playingField[column, row].Text.Equals(mineCharacter.ToString()))
+                                winner = true;
+                            else
+                                return false;
+                        }
+                    }
+                }
+            }
+
+            return winner;
+        }
+
+        private bool isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked()
+        {
+            bool isVisibleAndNotMarked = false;
+
+            for (int row = 0; row < height; row++)
+            {
+                for (int column = 0; column < width; column++)
+                {
+                    if (playingFieldCoverUp[column, row].Visible && !playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
+                        return false;
+                    else
+                        isVisibleAndNotMarked = true;
+                }
+            }
+
+            return isVisibleAndNotMarked;
+        }
     }
 }
