@@ -13,8 +13,8 @@ namespace ms_v1
     public partial class MainForm : Form
     {
         // playing field bounderies
-        int width = 10;
-        int height = 10;
+        int width = 9;
+        int height = 9;
 
         // start location
         int xLocation = 20;
@@ -30,7 +30,10 @@ namespace ms_v1
 
         // spezific character for the mine
         char mineCharacter = '#';
+        char notSureCharacter = '?';
 
+        // some controls
+        Panel panel1;
         TextBox tbMinesAmount;
         TextBox tbMinesCounter;
         Button btnStart;
@@ -47,6 +50,9 @@ namespace ms_v1
             initGame();
         }
 
+        /// <summary>
+        /// initialize game gomponents
+        /// </summary>
         private void initGame()
         {
             this.Controls.Clear();
@@ -54,6 +60,7 @@ namespace ms_v1
             // evtl in andere methode auslagern
             btnStart = new Button();
             btnStart.Location = new Point(170, 12);
+            btnStart.Text = "Restart";
             btnStart.Click += new EventHandler(btnStart_Click);
             this.Controls.Add(btnStart);
 
@@ -63,11 +70,13 @@ namespace ms_v1
 
             tbMinesAmount = new TextBox();
             tbMinesAmount.ReadOnly = true;
+            tbMinesAmount.Enabled = false;
             tbMinesAmount.Location = new Point(327, 12);
             this.Controls.Add(tbMinesAmount);
 
             tbMinesCounter = new TextBox();
             tbMinesCounter.ReadOnly = true;
+            tbMinesCounter.Enabled = false;
             tbMinesCounter.Location = new Point(12, 12);
             this.Controls.Add(tbMinesCounter);
 
@@ -79,18 +88,19 @@ namespace ms_v1
             xLocation = panel1.Location.X;
             yLocation = panel1.Location.Y;
 
-            playingField = new Button[width, height];
-            playingFieldCoverUp = new Button[width, height];
-
-            AddButtons();
+            AddPlayingFieldCoverUp();
             AddPlayingField();
             DistributeMines();
             DistributeHints();
 
             tbMinesAmount.Text = minesAmount.ToString();
             tbMinesCounter.Text = "0";
+            markedMines = 0;
         }
 
+        /// <summary>
+        /// distributes the hints for each adjacant mine
+        /// </summary>
         private void DistributeHints()
         {
             for (int row = 0; row < height; row++)
@@ -132,6 +142,9 @@ namespace ms_v1
             }
         }
 
+        /// <summary>
+        /// distributes the mines
+        /// </summary>
         private void DistributeMines()
         {
             Random rnd = new Random();
@@ -153,11 +166,16 @@ namespace ms_v1
             }
         }
 
+        /// <summary>
+        /// creates an dynamic playing field which consists of buttons
+        /// </summary>
         private void AddPlayingField()
         {
             int wnh = buttonSize;
             int x = xLocation;
             int y = yLocation;
+
+            playingField = new Button[width, height];
 
             for (int row = 0; row < height; row++)
             {
@@ -169,6 +187,7 @@ namespace ms_v1
                     btn.Enabled = false;
                     btn.TabStop = false;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
+                    btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
 
                     panel1.Controls.Add(btn);
                     playingField[column, row] = btn;
@@ -180,11 +199,16 @@ namespace ms_v1
             }
         }
 
-        private void AddButtons()
+        /// <summary>
+        /// creates a playing field cover up which also consists of buttons
+        /// </summary>
+        private void AddPlayingFieldCoverUp()
         {
             int wnh = buttonSize;
             int x = xLocation;
             int y = yLocation;
+
+            playingFieldCoverUp = new Button[width, height];
 
             for (int row = 0; row < height; row++)
             {
@@ -207,6 +231,15 @@ namespace ms_v1
             }
         }
 
+        /// <summary>
+        /// button click event, which is triggerd by playing field cover up buttons
+        /// right click -> sets the button text to '#' (the character spezified to a mine)
+        /// left click -> sets the visibility of the button to false and checks if a mine was 'exposed'
+        /// 
+        /// also checks if the game is over
+        /// </summary>
+        /// <param name="sender">playing field cover up button</param>
+        /// <param name="e">mouse event</param>
         private void btn_Click(Object sender, MouseEventArgs e)
         {
             Button obj = (Button)sender;
@@ -251,12 +284,22 @@ namespace ms_v1
             if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                 MessageBox.Show("You're Won!");
         }
-
+        
+        /// <summary>
+        /// event to restart the game
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnStart_Click(Object sender, EventArgs e)
         {
             initGame();
         }
 
+        /// <summary>
+        /// gets a playing field button object of a spezified point
+        /// </summary>
+        /// <param name="p">the location of the button</param>
+        /// <returns></returns>
         private Button getPlayingFieldButton(Point p)
         {
             Button obj = null;
@@ -276,6 +319,10 @@ namespace ms_v1
             return obj;
         }
 
+        /// <summary>
+        /// checks if the right amount and location of every mine is set correctly
+        /// </summary>
+        /// <returns>true, if every marked mine is correkt, false else</returns>
         private bool isWinner()
         {
             bool winner = false;
@@ -300,6 +347,10 @@ namespace ms_v1
             return winner;
         }
 
+        /// <summary>
+        /// checks if every button of the playing field cover up is pressed and marked as a mine
+        /// </summary>
+        /// <returns>true, if every playing field cover up button is not visible (pressed) and doesn't marked as a mine, false else</returns>
         private bool isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked()
         {
             bool isVisibleAndNotMarked = false;
