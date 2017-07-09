@@ -32,6 +32,8 @@ namespace ms_v1
         char mineCharacter = '#';
         char notSureCharacter = '?';
 
+        bool gameOver;
+
         // some controls
         Panel panel1;
         TextBox tbMinesAmount;
@@ -57,6 +59,10 @@ namespace ms_v1
         {
             this.Controls.Clear();
 
+            // initialize variables
+            gameOver = false;
+            markedMines = 0;
+
             // evtl in andere methode auslagern
             btnStart = new Button();
             btnStart.Location = new Point(170, 12);
@@ -66,7 +72,11 @@ namespace ms_v1
 
             panel1 = new Panel();
             panel1.Location = new Point(12, 77);
+            panel1.AutoSize = true;
             this.Controls.Add(panel1);
+
+            xLocation = panel1.Location.X;
+            yLocation = panel1.Location.Y;
 
             tbMinesAmount = new TextBox();
             tbMinesAmount.ReadOnly = true;
@@ -80,14 +90,6 @@ namespace ms_v1
             tbMinesCounter.Location = new Point(12, 12);
             this.Controls.Add(tbMinesCounter);
 
-            panel1.AutoSize = true;
-
-            //
-
-            // ???
-            xLocation = panel1.Location.X;
-            yLocation = panel1.Location.Y;
-
             AddPlayingFieldCoverUp();
             AddPlayingField();
             DistributeMines();
@@ -95,7 +97,6 @@ namespace ms_v1
 
             tbMinesAmount.Text = minesAmount.ToString();
             tbMinesCounter.Text = "0";
-            markedMines = 0;
         }
 
         /// <summary>
@@ -242,47 +243,62 @@ namespace ms_v1
         /// <param name="e">mouse event</param>
         private void btn_Click(Object sender, MouseEventArgs e)
         {
-            Button obj = (Button)sender;
-
-            if (e.Button == MouseButtons.Right)
+            if (!gameOver)
             {
-                if (!obj.Text.Equals(mineCharacter.ToString()))
-                {
-                    obj.Text = mineCharacter.ToString();
-                    obj.ForeColor = Color.Red;
-                    markedMines++;
-                }
-                else
-                {
-                    obj.Text = String.Empty;
-                    markedMines--;
-                }
+                Button obj = (Button)sender;
 
-                tbMinesCounter.Text = markedMines.ToString();
-            }
-
-            if (e.Button == MouseButtons.Left)
-            {
-                if (!obj.Text.Equals(mineCharacter.ToString()))
+                if (e.Button == MouseButtons.Right)
                 {
-                    obj.Visible = false;
-                }
-
-                if (getPlayingFieldButton(obj.Location).Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(mineCharacter.ToString()))
-                {
-                    if (MessageBox.Show("BOOM!\n\nRestart?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (!obj.Text.Equals(mineCharacter.ToString()))
                     {
-                        initGame();
+                        obj.Text = mineCharacter.ToString();
+                        obj.ForeColor = Color.Red;
+                        markedMines++;
                     }
                     else
                     {
-                        Application.Exit();
+                        obj.Text = String.Empty;
+                        markedMines--;
                     }
+
+                    tbMinesCounter.Text = markedMines.ToString();
+                }
+
+                if (e.Button == MouseButtons.Left)
+                {
+                    if (!obj.Text.Equals(mineCharacter.ToString()))
+                    {
+                        obj.Visible = false;
+                    }
+
+                    if (getPlayingFieldButton(obj.Location).Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(mineCharacter.ToString()))
+                    {
+                        MessageBox.Show("Game Over!");
+                        exposeAlleMines();
+                        gameOver = true;
+                    }
+
+                    // TO DO: clear method if no mine around (see original minesweeper)
+                }
+
+                if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
+                    MessageBox.Show("You're Won!");
+            }
+        }
+
+        /// <summary>
+        /// sets visibility of all buttons from playing field cover up to false if a mine is under it
+        /// </summary>
+        private void exposeAlleMines()
+        {
+            for (int row = 0; row < height; row++)
+            {
+                for (int column = 0; column < width; column++)
+                {
+                    if (playingField[column, row].Text.Equals(mineCharacter.ToString()))
+                        playingFieldCoverUp[column, row].Visible = false;
                 }
             }
-
-            if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
-                MessageBox.Show("You're Won!");
         }
         
         /// <summary>
