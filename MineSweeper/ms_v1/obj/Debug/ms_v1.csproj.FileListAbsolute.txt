@@ -7,3 +7,12 @@ c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debu
 c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.csproj.GenerateResource.Cache
 c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.exe
 c:\users\timper\documents\visual studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.pdb
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\bin\Debug\ms_v1.exe.config
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.exe
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.pdb
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\bin\Debug\ms_v1.exe
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\bin\Debug\ms_v1.pdb
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.csprojResolveAssemblyReference.cache
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.MainForm.resources
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.Properties.Resources.resources
+C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.csproj.GenerateResource.Cache
