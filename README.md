@@ -1,2 +1,2 @@
 # MyMinesSweeper
-i was board so i started to program minesweeper
+i was bored so i started to program minesweeper
