@@ -12,11 +12,23 @@ namespace ms_v1
 {
     public partial class MainForm : Form
     {
+        /* TO DO: 
+         * - clear method if no mine around (see original minesweeper)
+         * - middle mousebutton click on number
+         * - timer
+         * - highscores
+         * - icons (mine, exploded mine, flag, questionmark, smilie)
+         * - add menue strip
+         * - difficult settings
+         * - how to play
+         * 
+         */
+
         // playing field bounderies
         int width = 9;
         int height = 9;
 
-        // start location
+        // panel location
         int xLocation = 20;
         int yLocation = 80;
 
@@ -30,13 +42,13 @@ namespace ms_v1
 
         // spezific character for the mine
         char mineCharacter = '#';
-        char notSureCharacter = '?';
+        char questionMark = '?';
 
         bool gameOver;
 
         // some controls
-        Panel panel1;
-        TextBox tbMinesAmount;
+        Panel panel;
+        TextBox tbTimer;
         TextBox tbMinesCounter;
         Button btnStart;
         Button[,] playingField;
@@ -50,6 +62,9 @@ namespace ms_v1
         private void MainForm_Load(object sender, EventArgs e)
         {
             initGame();
+
+            this.Width = xLocation + panel.Size.Width + xLocation + 10;
+            this.Height = yLocation + panel.Size.Height + 55;
         }
 
         /// <summary>
@@ -59,44 +74,52 @@ namespace ms_v1
         {
             this.Controls.Clear();
 
-            // initialize variables
-            gameOver = false;
-            markedMines = 0;
+//->        // control for the playing field
+            panel = new Panel();
+            panel.Location = new Point(xLocation, yLocation);
+            panel.AutoSize = true;
+            this.Controls.Add(panel);
 
             // evtl in andere methode auslagern
             btnStart = new Button();
-            btnStart.Location = new Point(170, 12);
+            btnStart.Size = new Size(60, 60);
+            btnStart.Location = new Point((this.Width / 2) - (btnStart.Width / 2) - 5, 12);
+            btnStart.Anchor = AnchorStyles.Top;
             btnStart.Text = "Restart";
             btnStart.Click += new EventHandler(btnStart_Click);
             this.Controls.Add(btnStart);
 
-            panel1 = new Panel();
-            panel1.Location = new Point(12, 77);
-            panel1.AutoSize = true;
-            this.Controls.Add(panel1);
-
-            xLocation = panel1.Location.X;
-            yLocation = panel1.Location.Y;
-
-            tbMinesAmount = new TextBox();
-            tbMinesAmount.ReadOnly = true;
-            tbMinesAmount.Enabled = false;
-            tbMinesAmount.Location = new Point(327, 12);
-            this.Controls.Add(tbMinesAmount);
+            tbTimer = new TextBox();
+            tbTimer.ReadOnly = true;
+            tbTimer.Enabled = false;
+            tbTimer.Multiline = true;
+            tbTimer.Anchor = AnchorStyles.Top;
+            tbTimer.TextAlign = HorizontalAlignment.Center;
+            tbTimer.Size = new Size(40, 40);
+            tbTimer.Location = new Point(this.Width - tbTimer.Width - 33, 20);
+            this.Controls.Add(tbTimer);
 
             tbMinesCounter = new TextBox();
             tbMinesCounter.ReadOnly = true;
             tbMinesCounter.Enabled = false;
-            tbMinesCounter.Location = new Point(12, 12);
-            this.Controls.Add(tbMinesCounter);
+            tbMinesCounter.Multiline = true;
+            tbMinesCounter.Anchor = AnchorStyles.Top;
+            tbMinesCounter.TextAlign = HorizontalAlignment.Center;
+            tbMinesCounter.Size = new Size(40, 40);
+            tbMinesCounter.Location = new Point(xLocation, 20);
+            this.Controls.Add(tbMinesCounter);   
+ //->        
 
             AddPlayingFieldCoverUp();
             AddPlayingField();
             DistributeMines();
             DistributeHints();
 
-            tbMinesAmount.Text = minesAmount.ToString();
-            tbMinesCounter.Text = "0";
+            // initialize variables
+            gameOver = false;
+            markedMines = 0;
+            tbMinesCounter.Text = minesAmount.ToString();
+            tbTimer.Text = "0";
         }
 
         /// <summary>
@@ -173,8 +196,8 @@ namespace ms_v1
         private void AddPlayingField()
         {
             int wnh = buttonSize;
-            int x = xLocation;
-            int y = yLocation;
+            int x = 0;
+            int y = 0;
 
             playingField = new Button[width, height];
 
@@ -190,12 +213,12 @@ namespace ms_v1
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
 
-                    panel1.Controls.Add(btn);
+                    panel.Controls.Add(btn);
                     playingField[column, row] = btn;
 
                     x += buttonSize;
                 }
-                x = xLocation;
+                x = 0;
                 y += buttonSize;
             }
         }
@@ -206,8 +229,8 @@ namespace ms_v1
         private void AddPlayingFieldCoverUp()
         {
             int wnh = buttonSize;
-            int x = xLocation;
-            int y = yLocation;
+            int x = 0;
+            int y = 0;
 
             playingFieldCoverUp = new Button[width, height];
 
@@ -222,12 +245,12 @@ namespace ms_v1
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.MouseDown += new MouseEventHandler(btn_Click);
 
-                    panel1.Controls.Add(btn);
+                    panel.Controls.Add(btn);
                     playingFieldCoverUp[column, row] = btn;
 
                     x += buttonSize;
                 }
-                x = xLocation;
+                x = 0;
                 y += buttonSize;
             }
         }
@@ -249,7 +272,7 @@ namespace ms_v1
 
                 if (e.Button == MouseButtons.Right)
                 {
-                    if (!obj.Text.Equals(mineCharacter.ToString()))
+                    if (obj.Text.Equals(String.Empty))
                     {
                         obj.Text = mineCharacter.ToString();
                         obj.ForeColor = Color.Red;
@@ -257,11 +280,19 @@ namespace ms_v1
                     }
                     else
                     {
-                        obj.Text = String.Empty;
-                        markedMines--;
+                        if (obj.Text.Equals(mineCharacter.ToString()))
+                        {
+                            obj.Text = questionMark.ToString();
+                            obj.ForeColor = Color.Blue;
+                            markedMines--;
+                        }
+                        else
+                        {
+                            obj.Text = String.Empty;
+                        }
                     }
 
-                    tbMinesCounter.Text = markedMines.ToString();
+                    tbMinesCounter.Text = (minesAmount - markedMines).ToString();
                 }
 
                 if (e.Button == MouseButtons.Left)
@@ -273,12 +304,9 @@ namespace ms_v1
 
                     if (getPlayingFieldButton(obj.Location).Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(mineCharacter.ToString()))
                     {
-                        MessageBox.Show("Game Over!");
                         exposeAlleMines();
                         gameOver = true;
                     }
-
-                    // TO DO: clear method if no mine around (see original minesweeper)
                 }
 
                 if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
