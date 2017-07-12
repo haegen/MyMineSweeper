@@ -5,49 +5,49 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ms_v1
 {
+    /* 
+     * TO DO: 
+     * - clear method if no mine around (see original minesweeper)
+     * - add menue to select dificulty (beginner, intermediate, expert, custom)
+     * - dynamic form size (or dynamic button/ panel size)
+     * - highscores
+     * - timer
+     * - include images (mine, exploding mine, flag, questionmark, smilie face (restart button))
+     * - by clicking a number, and (a) mine(s) is/are marked -> expose all touching fields (optional)
+     */
+
     public partial class MainForm : Form
     {
-        /* TO DO: 
-         * - clear method if no mine around (see original minesweeper)
-         * - middle mousebutton click on number
-         * - timer
-         * - highscores
-         * - icons (mine, exploded mine, flag, questionmark, smilie)
-         * - add menue strip
-         * - difficult settings
-         * - how to play
-         * 
-         */
-
         // playing field bounderies
-        int width = 9;
-        int height = 9;
+        int playingFieldWidth;
+        int playingFieldHeight;
 
-        // panel location
-        int xLocation = 20;
-        int yLocation = 80;
+        // start location
+        int panelLocationX;
+        int panelLocationY;
 
         // button size
-        int buttonSize = 40;
+        int buttonSize;
 
-        // amount of mines
-        int minesAmount = 10;
+        int minesAmount;
+        int markedMines;
 
-        int markedMines = 0;
+        bool gameOver;
 
         // spezific character for the mine
         char mineCharacter = '#';
         char questionMark = '?';
 
-        bool gameOver;
+        // timer
+        Timer t1;
+        int sec;
 
         // some controls
-        Panel panel;
+        Panel panel1;
         TextBox tbTimer;
         TextBox tbMinesCounter;
         Button btnStart;
@@ -61,10 +61,9 @@ namespace ms_v1
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            initGame();
 
-            this.Width = xLocation + panel.Size.Width + xLocation + 10;
-            this.Height = yLocation + panel.Size.Height + 55;
+
+            initGame();
         }
 
         /// <summary>
@@ -74,52 +73,63 @@ namespace ms_v1
         {
             this.Controls.Clear();
 
-//->        // control for the playing field
-            panel = new Panel();
-            panel.Location = new Point(xLocation, yLocation);
-            panel.AutoSize = true;
-            this.Controls.Add(panel);
+            // initialize variables
+            gameOver = false;
+            markedMines = 0;
+            sec = 0;
+            playingFieldWidth = 9;
+            playingFieldHeight = 9;
+            panelLocationX = 20;
+            panelLocationY = 100;
+            buttonSize = 40;
+            minesAmount = 10;
+            markedMines = 0;
+
+            this.Width = panelLocationX + ((playingFieldWidth * buttonSize) + 15) + panelLocationX;
+            this.Height = panelLocationY + ((playingFieldHeight * buttonSize)) + 60;
+
+            // Timer
+            t1 = new Timer();
+            t1.Interval = 1000;
+            t1.Tick += new EventHandler(t1_Tick);
 
             // evtl in andere methode auslagern
             btnStart = new Button();
             btnStart.Size = new Size(60, 60);
-            btnStart.Location = new Point((this.Width / 2) - (btnStart.Width / 2) - 5, 12);
-            btnStart.Anchor = AnchorStyles.Top;
+            btnStart.Location = new Point(this.Width / 2 - btnStart.Size.Width / 2 - 7, 20);
             btnStart.Text = "Restart";
             btnStart.Click += new EventHandler(btnStart_Click);
             this.Controls.Add(btnStart);
 
             tbTimer = new TextBox();
-            tbTimer.ReadOnly = true;
             tbTimer.Enabled = false;
             tbTimer.Multiline = true;
-            tbTimer.Anchor = AnchorStyles.Top;
             tbTimer.TextAlign = HorizontalAlignment.Center;
-            tbTimer.Size = new Size(40, 40);
-            tbTimer.Location = new Point(this.Width - tbTimer.Width - 33, 20);
+            tbTimer.Size = new Size(buttonSize, buttonSize);
+            tbTimer.Location = new Point(this.Width - buttonSize - panelLocationX - 15, 20);
             this.Controls.Add(tbTimer);
 
             tbMinesCounter = new TextBox();
-            tbMinesCounter.ReadOnly = true;
             tbMinesCounter.Enabled = false;
             tbMinesCounter.Multiline = true;
-            tbMinesCounter.Anchor = AnchorStyles.Top;
             tbMinesCounter.TextAlign = HorizontalAlignment.Center;
-            tbMinesCounter.Size = new Size(40, 40);
-            tbMinesCounter.Location = new Point(xLocation, 20);
-            this.Controls.Add(tbMinesCounter);   
- //->        
+            tbMinesCounter.Size = new Size(buttonSize, buttonSize);
+            tbMinesCounter.Location = new Point(panelLocationX, 20);
+            this.Controls.Add(tbMinesCounter);
+
+            panel1 = new Panel();
+            panel1.Location = new Point(panelLocationX, panelLocationY);
+            panel1.Size = new Size(playingFieldWidth * buttonSize, playingFieldHeight * buttonSize);
+            this.Controls.Add(panel1);
 
             AddPlayingFieldCoverUp();
             AddPlayingField();
             DistributeMines();
             DistributeHints();
 
-            // initialize variables
-            gameOver = false;
-            markedMines = 0;
-            tbMinesCounter.Text = minesAmount.ToString();
-            tbTimer.Text = "0";
+           
+            tbTimer.Text = sec.ToString();
+            tbMinesCounter.Text = (minesAmount - markedMines).ToString();
         }
 
         /// <summary>
@@ -127,9 +137,9 @@ namespace ms_v1
         /// </summary>
         private void DistributeHints()
         {
-            for (int row = 0; row < height; row++)
+            for (int row = 0; row < playingFieldHeight; row++)
             {
-                for (int column = 0; column < width; column++)
+                for (int column = 0; column < playingFieldWidth; column++)
                 {
                     int minesCount = 0;
 
@@ -138,7 +148,7 @@ namespace ms_v1
                         if (column - 1 >= 0 && playingField[column - 1, row].Text.Equals(mineCharacter.ToString()))
                             minesCount++;
 
-                        if (column + 1 < width && playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                        if (column + 1 < playingFieldWidth && playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
                             minesCount++;
 
                         if (row - 1 >= 0 && playingField[column, row - 1].Text.Equals(mineCharacter.ToString()))
@@ -147,16 +157,16 @@ namespace ms_v1
                         if (row - 1 >= 0 && column - 1 >= 0 && playingField[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
                             minesCount++;
 
-                        if (row - 1 >= 0 && column + 1 < width && playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                        if (row - 1 >= 0 && column + 1 < playingFieldWidth && playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
                             minesCount++;
 
-                        if (row + 1 < height && playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                        if (row + 1 < playingFieldHeight && playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
                             minesCount++;
 
-                        if (row + 1 < height && column - 1 >= 0 && playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                        if (row + 1 < playingFieldHeight && column - 1 >= 0 && playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
                             minesCount++;
 
-                        if (row + 1 < height && column + 1 < width && playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                        if (row + 1 < playingFieldHeight && column + 1 < playingFieldWidth && playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
                             minesCount++;
 
                         if (minesCount != 0)
@@ -179,8 +189,8 @@ namespace ms_v1
                 if (minesCount == minesAmount)
                     break;
 
-                int row = rnd.Next(0, height);
-                int column = rnd.Next(0, width);
+                int row = rnd.Next(0, playingFieldHeight);
+                int column = rnd.Next(0, playingFieldWidth);
 
                 if (!playingField[column, row].Text.Equals(mineCharacter.ToString()))
                 {
@@ -199,11 +209,11 @@ namespace ms_v1
             int x = 0;
             int y = 0;
 
-            playingField = new Button[width, height];
+            playingField = new Button[playingFieldWidth, playingFieldHeight];
 
-            for (int row = 0; row < height; row++)
+            for (int row = 0; row < playingFieldHeight; row++)
             {
-                for (int column = 0; column < width; column++)
+                for (int column = 0; column < playingFieldWidth; column++)
                 {
                     Button btn = new Button();
                     btn.Location = new Point(x, y);
@@ -213,7 +223,7 @@ namespace ms_v1
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
 
-                    panel.Controls.Add(btn);
+                    panel1.Controls.Add(btn);
                     playingField[column, row] = btn;
 
                     x += buttonSize;
@@ -232,11 +242,11 @@ namespace ms_v1
             int x = 0;
             int y = 0;
 
-            playingFieldCoverUp = new Button[width, height];
+            playingFieldCoverUp = new Button[playingFieldWidth, playingFieldHeight];
 
-            for (int row = 0; row < height; row++)
+            for (int row = 0; row < playingFieldHeight; row++)
             {
-                for (int column = 0; column < width; column++)
+                for (int column = 0; column < playingFieldWidth; column++)
                 {
                     Button btn = new Button();
                     btn.Location = new Point(x, y);
@@ -245,7 +255,7 @@ namespace ms_v1
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.MouseDown += new MouseEventHandler(btn_Click);
 
-                    panel.Controls.Add(btn);
+                    panel1.Controls.Add(btn);
                     playingFieldCoverUp[column, row] = btn;
 
                     x += buttonSize;
@@ -266,6 +276,8 @@ namespace ms_v1
         /// <param name="e">mouse event</param>
         private void btn_Click(Object sender, MouseEventArgs e)
         {
+            t1.Start();
+
             if (!gameOver)
             {
                 Button obj = (Button)sender;
@@ -283,7 +295,6 @@ namespace ms_v1
                         if (obj.Text.Equals(mineCharacter.ToString()))
                         {
                             obj.Text = questionMark.ToString();
-                            obj.ForeColor = Color.Blue;
                             markedMines--;
                         }
                         else
@@ -292,7 +303,7 @@ namespace ms_v1
                         }
                     }
 
-                    tbMinesCounter.Text = (minesAmount - markedMines).ToString();
+                    tbMinesCounter.Text = markedMines.ToString();
                 }
 
                 if (e.Button == MouseButtons.Left)
@@ -304,13 +315,17 @@ namespace ms_v1
 
                     if (getPlayingFieldButton(obj.Location).Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(mineCharacter.ToString()))
                     {
+                        t1.Stop();
                         exposeAlleMines();
                         gameOver = true;
                     }
                 }
 
                 if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
+                {
+                    t1.Stop();
                     MessageBox.Show("You're Won!");
+                }
             }
         }
 
@@ -319,11 +334,11 @@ namespace ms_v1
         /// </summary>
         private void exposeAlleMines()
         {
-            for (int row = 0; row < height; row++)
+            for (int row = 0; row < playingFieldHeight; row++)
             {
-                for (int column = 0; column < width; column++)
+                for (int column = 0; column < playingFieldWidth; column++)
                 {
-                    if (playingField[column, row].Text.Equals(mineCharacter.ToString()))
+                    if (playingField[column, row].Text.Equals(mineCharacter.ToString()) && !playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
                         playingFieldCoverUp[column, row].Visible = false;
                 }
             }
@@ -337,6 +352,7 @@ namespace ms_v1
         private void btnStart_Click(Object sender, EventArgs e)
         {
             initGame();
+            t1.Stop();
         }
 
         /// <summary>
@@ -348,9 +364,9 @@ namespace ms_v1
         {
             Button obj = null;
 
-            for (int row = 0; row < height; row++)
+            for (int row = 0; row < playingFieldHeight; row++)
             {
-                for (int column = 0; column < width; column++)
+                for (int column = 0; column < playingFieldWidth; column++)
                 {
                     if (playingField[column, row].Location == p)
                     {
@@ -373,9 +389,9 @@ namespace ms_v1
 
             if (markedMines == minesAmount)
             {
-                for (int row = 0; row < height; row++)
+                for (int row = 0; row < playingFieldHeight; row++)
                 {
-                    for (int column = 0; column < width; column++)
+                    for (int column = 0; column < playingFieldWidth; column++)
                     {
                         if (playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
                         {
@@ -399,9 +415,9 @@ namespace ms_v1
         {
             bool isVisibleAndNotMarked = false;
 
-            for (int row = 0; row < height; row++)
+            for (int row = 0; row < playingFieldHeight; row++)
             {
-                for (int column = 0; column < width; column++)
+                for (int column = 0; column < playingFieldWidth; column++)
                 {
                     if (playingFieldCoverUp[column, row].Visible && !playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
                         return false;
@@ -411,6 +427,11 @@ namespace ms_v1
             }
 
             return isVisibleAndNotMarked;
+        }
+
+        private void t1_Tick(object sender, EventArgs e)
+        {
+            tbTimer.Text = (sec++).ToString();
         }
     }
 }
