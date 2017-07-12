@@ -30,24 +30,24 @@ namespace ms_v1
         int panelLocationX;
         int panelLocationY;
 
-        // button size
         int buttonSize;
-
+        int textBoxSize;
         int minesAmount;
         int markedMines;
-
         bool gameOver;
+        int score;
 
         // spezific character for the mine
         char mineCharacter = '#';
         char questionMark = '?';
 
-        // timer
         Timer t1;
         int sec;
 
         // some controls
-        Panel panel1;
+        MenuStrip menu;
+        ToolStripButton gameSettings;
+        Panel panel;
         TextBox tbTimer;
         TextBox tbMinesCounter;
         Button btnStart;
@@ -57,19 +57,13 @@ namespace ms_v1
         public MainForm()
         {
             InitializeComponent();
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
-
-            initGame();
+            initGame(9, 9, 10);
         }
 
         /// <summary>
         /// initialize game gomponents
         /// </summary>
-        private void initGame()
+        public void initGame(int height, int width, int mines)
         {
             this.Controls.Clear();
 
@@ -77,16 +71,26 @@ namespace ms_v1
             gameOver = false;
             markedMines = 0;
             sec = 0;
-            playingFieldWidth = 9;
-            playingFieldHeight = 9;
+            playingFieldWidth = width;
+            playingFieldHeight = height;
             panelLocationX = 20;
-            panelLocationY = 100;
-            buttonSize = 40;
-            minesAmount = 10;
+            panelLocationY = 124;
+            buttonSize = 30;
+            textBoxSize = 40;
+            minesAmount = mines;
             markedMines = 0;
+            score = 0;
 
             this.Width = panelLocationX + ((playingFieldWidth * buttonSize) + 15) + panelLocationX;
             this.Height = panelLocationY + ((playingFieldHeight * buttonSize)) + 60;
+
+            // menu
+            menu = new MenuStrip();
+            gameSettings = new ToolStripButton();
+            gameSettings.Text = "Settings";
+            gameSettings.Click += new EventHandler(gameSettings_Click);
+            menu.Items.Add(gameSettings);
+            this.Controls.Add(menu);
 
             // Timer
             t1 = new Timer();
@@ -96,37 +100,39 @@ namespace ms_v1
             // evtl in andere methode auslagern
             btnStart = new Button();
             btnStart.Size = new Size(60, 60);
-            btnStart.Location = new Point(this.Width / 2 - btnStart.Size.Width / 2 - 7, 20);
+            btnStart.Location = new Point(this.Width / 2 - btnStart.Size.Width / 2 - 7, menu.Height + 20);
             btnStart.Text = "Restart";
             btnStart.Click += new EventHandler(btnStart_Click);
             this.Controls.Add(btnStart);
 
+            // Timer Textbox
             tbTimer = new TextBox();
             tbTimer.Enabled = false;
             tbTimer.Multiline = true;
             tbTimer.TextAlign = HorizontalAlignment.Center;
-            tbTimer.Size = new Size(buttonSize, buttonSize);
-            tbTimer.Location = new Point(this.Width - buttonSize - panelLocationX - 15, 20);
+            tbTimer.Size = new Size(textBoxSize, textBoxSize);
+            tbTimer.Location = new Point(this.Width - panelLocationX - 15 - textBoxSize, menu.Height + 20);
             this.Controls.Add(tbTimer);
 
+            // MineCounter Textbox
             tbMinesCounter = new TextBox();
             tbMinesCounter.Enabled = false;
             tbMinesCounter.Multiline = true;
             tbMinesCounter.TextAlign = HorizontalAlignment.Center;
-            tbMinesCounter.Size = new Size(buttonSize, buttonSize);
-            tbMinesCounter.Location = new Point(panelLocationX, 20);
+            tbMinesCounter.Size = new Size(textBoxSize, textBoxSize);
+            tbMinesCounter.Location = new Point(panelLocationX, menu.Height + 20);
             this.Controls.Add(tbMinesCounter);
 
-            panel1 = new Panel();
-            panel1.Location = new Point(panelLocationX, panelLocationY);
-            panel1.Size = new Size(playingFieldWidth * buttonSize, playingFieldHeight * buttonSize);
-            this.Controls.Add(panel1);
+            // Playing field panel
+            panel = new Panel();
+            panel.Location = new Point(panelLocationX, panelLocationY);
+            panel.Size = new Size(playingFieldWidth * buttonSize, playingFieldHeight * buttonSize);
+            this.Controls.Add(panel);
 
             AddPlayingFieldCoverUp();
             AddPlayingField();
             DistributeMines();
             DistributeHints();
-
            
             tbTimer.Text = sec.ToString();
             tbMinesCounter.Text = (minesAmount - markedMines).ToString();
@@ -223,7 +229,7 @@ namespace ms_v1
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
 
-                    panel1.Controls.Add(btn);
+                    panel.Controls.Add(btn);
                     playingField[column, row] = btn;
 
                     x += buttonSize;
@@ -255,7 +261,7 @@ namespace ms_v1
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.MouseDown += new MouseEventHandler(btn_Click);
 
-                    panel1.Controls.Add(btn);
+                    panel.Controls.Add(btn);
                     playingFieldCoverUp[column, row] = btn;
 
                     x += buttonSize;
@@ -276,10 +282,9 @@ namespace ms_v1
         /// <param name="e">mouse event</param>
         private void btn_Click(Object sender, MouseEventArgs e)
         {
-            t1.Start();
-
             if (!gameOver)
             {
+                t1.Start();
                 Button obj = (Button)sender;
 
                 if (e.Button == MouseButtons.Right)
@@ -295,6 +300,7 @@ namespace ms_v1
                         if (obj.Text.Equals(mineCharacter.ToString()))
                         {
                             obj.Text = questionMark.ToString();
+                            obj.ForeColor = Color.Blue;
                             markedMines--;
                         }
                         else
@@ -303,12 +309,12 @@ namespace ms_v1
                         }
                     }
 
-                    tbMinesCounter.Text = markedMines.ToString();
+                    tbMinesCounter.Text = (minesAmount - markedMines).ToString();
                 }
 
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (!obj.Text.Equals(mineCharacter.ToString()))
+                    if (!obj.Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(questionMark.ToString()))
                     {
                         obj.Visible = false;
                     }
@@ -324,7 +330,8 @@ namespace ms_v1
                 if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                 {
                     t1.Stop();
-                    MessageBox.Show("You're Won!");
+                    score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000);
+                    MessageBox.Show("You're Won!\n\nScore: " + score);
                 }
             }
         }
@@ -351,7 +358,7 @@ namespace ms_v1
         /// <param name="e"></param>
         private void btnStart_Click(Object sender, EventArgs e)
         {
-            initGame();
+            initGame(playingFieldHeight, playingFieldWidth, minesAmount);
             t1.Stop();
         }
 
@@ -429,9 +436,25 @@ namespace ms_v1
             return isVisibleAndNotMarked;
         }
 
-        private void t1_Tick(object sender, EventArgs e)
+        /// <summary>
+        /// gets triggerd every second to increase the value of the timer textbox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void t1_Tick(Object sender, EventArgs e)
         {
             tbTimer.Text = (sec++).ToString();
+        }
+
+        /// <summary>
+        /// gets triggerd if the toolstripmenu item is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void gameSettings_Click(Object sender, EventArgs e)
+        {
+            SettingsForm sf = new SettingsForm(this);
+            sf.ShowDialog();
         }
     }
 }

@@ -40,8 +40,7 @@
             this.MinimizeBox = false;
             this.Name = "MainForm";
             this.ShowIcon = false;
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Text = "Minesweeper";
             this.ResumeLayout(false);
 
         }
