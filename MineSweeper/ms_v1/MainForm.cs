@@ -102,6 +102,7 @@ namespace ms_v1
             btnStart.Size = new Size(60, 60);
             btnStart.Location = new Point(this.Width / 2 - btnStart.Size.Width / 2 - 7, menu.Height + 20);
             btnStart.Text = "Restart";
+            btnStart.TabStop = false;
             btnStart.Click += new EventHandler(btnStart_Click);
             this.Controls.Add(btnStart);
 
@@ -226,6 +227,7 @@ namespace ms_v1
                     btn.Size = new Size(wnh, wnh);
                     btn.Enabled = false;
                     btn.TabStop = false;
+                    btn.Name = "btn" + column + row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
 
@@ -258,6 +260,7 @@ namespace ms_v1
                     btn.Location = new Point(x, y);
                     btn.Size = new Size(wnh, wnh);
                     btn.TabStop = false;
+                    btn.Name = "btn" + column + row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.MouseDown += new MouseEventHandler(btn_Click);
 
@@ -284,7 +287,7 @@ namespace ms_v1
         {
             if (!gameOver)
             {
-                t1.Start();
+                //t1.Start();
                 Button obj = (Button)sender;
 
                 if (e.Button == MouseButtons.Right)
@@ -314,14 +317,18 @@ namespace ms_v1
 
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (!obj.Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(questionMark.ToString()))
+                    if (obj.Text.Equals(String.Empty))
                     {
                         obj.Visible = false;
+                        clearBlanks(obj);
                     }
 
-                    if (getPlayingFieldButton(obj.Location).Text.Equals(mineCharacter.ToString()) && !obj.Text.Equals(mineCharacter.ToString()))
+                    Point p = getCoordinates(obj);
+                    int column = p.X;
+                    int row = p.Y;
+                    if (playingField[column, row].Text.Equals(mineCharacter.ToString()) && obj.Text.Equals(String.Empty))
                     {
-                        t1.Stop();
+                        //t1.Stop();
                         exposeAlleMines();
                         gameOver = true;
                     }
@@ -329,11 +336,148 @@ namespace ms_v1
 
                 if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                 {
-                    t1.Stop();
+                    //t1.Stop();
                     score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000);
                     MessageBox.Show("You're Won!\n\nScore: " + score);
                 }
             }
+        }
+
+        private void clearBlanks(Button sender) 
+        {
+            Point coordinates = getCoordinates(sender);
+            int column = coordinates.X;
+            int row = coordinates.Y;
+
+            List<Point> blanks = new List<Point>();
+
+            do
+            {
+                if (blanks.Count > 0)
+                {
+                    coordinates = blanks.ElementAt(0);
+                    blanks.RemoveAt(0);
+                    column = coordinates.X;
+                    row = coordinates.Y;
+                }
+
+                if (playingField[column, row].Text.Equals(String.Empty))
+                {
+                    if (column + 1 < playingFieldWidth)
+                    {
+                        if (playingFieldCoverUp[column + 1, row].Visible)
+                        {
+                            playingFieldCoverUp[column + 1, row].Visible = false;
+                            if (playingField[column + 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                blanks.Add(new Point(column + 1, row));
+                        }
+                        //if (playingField[column + 1, row].Text.Equals(String.Empty) && !blanks.Contains(playingField[column + 1, row]))
+                        //    blanks.Add(playingField[column + 1, row]);
+
+                        if (row + 1 < playingFieldHeight)
+                        {
+                            if (playingFieldCoverUp[column + 1, row + 1].Visible)
+                            {
+                                playingFieldCoverUp[column + 1, row + 1].Visible = false;
+                                if (playingField[column + 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column + 1, row + 1));
+                            }
+                            //if (playingField[column + 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column + 1, row + 1]))
+                            //    blanks.Add(playingField[column + 1, row + 1]);
+                        }
+
+                        if (row - 1 >= 0)
+                        {
+                            if (playingFieldCoverUp[column + 1, row - 1].Visible)
+                            {
+                                playingFieldCoverUp[column + 1, row - 1].Visible = false;
+                                if (playingField[column + 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column + 1, row - 1));
+                            }
+                            //if (playingField[column + 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column + 1, row - 1]))
+                            //    blanks.Add(playingField[column + 1, row - 1]);
+                        }
+                    }
+
+                    if (column - 1 >= 0)
+                    {
+                        if (playingFieldCoverUp[column - 1, row].Visible)
+                        {
+                            playingFieldCoverUp[column - 1, row].Visible = false;
+                            if (playingField[column - 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                blanks.Add(new Point(column - 1, row));
+                        }
+                        //if (playingField[column - 1, row].Text.Equals(String.Empty) && !blanks.Contains(playingField[column - 1, row]))
+                        //    blanks.Add(playingField[column - 1, row]);
+
+                        if (row + 1 < playingFieldHeight)
+                        {
+                            if (playingFieldCoverUp[column - 1, row + 1].Visible)
+                            {
+                                playingFieldCoverUp[column - 1, row + 1].Visible = false;
+                                if (playingField[column - 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column - 1, row + 1));
+                            }
+                            //if (playingField[column - 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column - 1, row + 1]))
+                            //    blanks.Add(playingField[column - 1, row + 1]);
+                        }
+
+                        if (row - 1 >= 0)
+                        {
+                            if (playingFieldCoverUp[column - 1, row - 1].Visible)
+                            {
+                                playingFieldCoverUp[column - 1, row - 1].Visible = false;
+                                if (playingField[column - 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column - 1, row - 1));
+                            }
+                            //if (playingField[column - 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column - 1, row - 1]))
+                            //    blanks.Add(playingField[column - 1, row - 1]);
+                        }
+                    }
+
+                    if (row + 1 < playingFieldHeight)
+                    {
+                        if (playingFieldCoverUp[column, row + 1].Visible)
+                        {
+                            playingFieldCoverUp[column, row + 1].Visible = false;
+                            if (playingField[column, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                blanks.Add(new Point(column, row + 1));
+                        }
+                        //if (playingField[column, row + 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column, row + 1]))
+                        //    blanks.Add(playingField[column, row + 1]);
+                    }
+
+                    if (row - 1 >= 0)
+                    {
+                        if (playingFieldCoverUp[column, row - 1].Visible)
+                        {
+                            playingFieldCoverUp[column, row - 1].Visible = false;
+                            if (playingField[column, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                blanks.Add(new Point(column, row - 1));
+                        }
+                        //if (playingField[column, row - 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column, row - 1]))
+                        //    blanks.Add(playingField[column, row - 1]);
+                    }
+                }
+
+            } while (blanks.Count > 0);
+        }
+
+        private Point getCoordinates(Button obj)
+        {
+            Point p = new Point();
+            for (int row = 0; row < playingFieldHeight; row++)
+            {
+                for (int column = 0; column < playingFieldWidth; column++)
+                {
+                    if (playingField[column, row].Name.Equals(obj.Name))
+                    {
+                        p.X = column;
+                        p.Y = row;
+                    }
+                }
+            }
+            return p;
         }
 
         /// <summary>
@@ -359,31 +503,7 @@ namespace ms_v1
         private void btnStart_Click(Object sender, EventArgs e)
         {
             initGame(playingFieldHeight, playingFieldWidth, minesAmount);
-            t1.Stop();
-        }
-
-        /// <summary>
-        /// gets a playing field button object of a spezified point
-        /// </summary>
-        /// <param name="p">the location of the button</param>
-        /// <returns></returns>
-        private Button getPlayingFieldButton(Point p)
-        {
-            Button obj = null;
-
-            for (int row = 0; row < playingFieldHeight; row++)
-            {
-                for (int column = 0; column < playingFieldWidth; column++)
-                {
-                    if (playingField[column, row].Location == p)
-                    {
-                        obj = playingField[column, row];
-                        break;
-                    }
-                }
-            }
-
-            return obj;
+            //t1.Stop();
         }
 
         /// <summary>

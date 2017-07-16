@@ -27,6 +27,11 @@ namespace ms_v1
 
         private void rb_CheckedChange(object sender, EventArgs e)
         {
+            
+        }
+
+        private void btnNewGame_Click(object sender, EventArgs e)
+        {
             if (rbBeginner.Checked)
             {
                 this.height = Convert.ToInt32(tbBeginnerHeight.Text);
@@ -54,10 +59,7 @@ namespace ms_v1
                 this.width = Convert.ToInt32(tbCustomWidth.Text);
                 this.mines = Convert.ToInt32(tbCustomMines.Text);
             }
-        }
 
-        private void btnNewGame_Click(object sender, EventArgs e)
-        {
             mf.initGame(height, width, mines);
             this.Close();
         }
