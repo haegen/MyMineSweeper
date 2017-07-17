@@ -17,6 +17,7 @@ namespace ms_v1
         int width;
         int height;
         int mines;
+        int mode;
 
         public SettingsForm(MainForm mf)
         {
@@ -37,6 +38,7 @@ namespace ms_v1
                 this.height = Convert.ToInt32(tbBeginnerHeight.Text);
                 this.width = Convert.ToInt32(tbBeginnerWidth.Text);
                 this.mines = Convert.ToInt32(tbBeginnerMines.Text);
+                this.mode = 1;
             }
 
             if (rbIntermediate.Checked)
@@ -44,6 +46,7 @@ namespace ms_v1
                 this.height = Convert.ToInt32(tbIntermediateHeight.Text);
                 this.width = Convert.ToInt32(tbIntermediateWidth.Text);
                 this.mines = Convert.ToInt32(tbIntermediateMines.Text);
+                this.mode = 2;
             }
 
             if (rbExpert.Checked)
@@ -51,6 +54,7 @@ namespace ms_v1
                 this.height = Convert.ToInt32(tbExpertHeight.Text);
                 this.width = Convert.ToInt32(tbExpertWidth.Text);
                 this.mines = Convert.ToInt32(tbExpertMines.Text);
+                this.mode = 3;
             }
 
             if (rbCustom.Checked)
@@ -58,9 +62,10 @@ namespace ms_v1
                 this.height = Convert.ToInt32(tbCustomHeight.Text);
                 this.width = Convert.ToInt32(tbCustomWidth.Text);
                 this.mines = Convert.ToInt32(tbCustomMines.Text);
+                this.mode = 0;
             }
 
-            mf.initGame(height, width, mines);
+            mf.initGame(height, width, mines, mode);
             this.Close();
         }
     }

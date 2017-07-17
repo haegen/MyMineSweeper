@@ -34,12 +34,14 @@ namespace ms_v1
         int textBoxSize;
         int minesAmount;
         int markedMines;
+        int playingMode;
         bool gameOver;
         int score;
 
         // spezific character for the mine
         char mineCharacter = '#';
         char questionMark = '?';
+        char falseMine = 'F';
 
         Timer t1;
         int sec;
@@ -57,13 +59,13 @@ namespace ms_v1
         public MainForm()
         {
             InitializeComponent();
-            initGame(9, 9, 10);
+            initGame(9, 9, 10, 1);
         }
 
         /// <summary>
         /// initialize game gomponents
         /// </summary>
-        public void initGame(int height, int width, int mines)
+        public void initGame(int height, int width, int mines, int mode)
         {
             this.Controls.Clear();
 
@@ -80,6 +82,7 @@ namespace ms_v1
             minesAmount = mines;
             markedMines = 0;
             score = 0;
+            playingMode = mode;
 
             this.Width = panelLocationX + ((playingFieldWidth * buttonSize) + 15) + panelLocationX;
             this.Height = panelLocationY + ((playingFieldHeight * buttonSize)) + 60;
@@ -227,7 +230,7 @@ namespace ms_v1
                     btn.Size = new Size(wnh, wnh);
                     btn.Enabled = false;
                     btn.TabStop = false;
-                    btn.Name = "btn" + column + row;
+                    btn.Name = "btn" + column + "_"+ row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
 
@@ -260,8 +263,9 @@ namespace ms_v1
                     btn.Location = new Point(x, y);
                     btn.Size = new Size(wnh, wnh);
                     btn.TabStop = false;
-                    btn.Name = "btn" + column + row;
+                    btn.Name = "btn" + column + "_" + row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
+                    btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
                     btn.MouseDown += new MouseEventHandler(btn_Click);
 
                     panel.Controls.Add(btn);
@@ -343,6 +347,10 @@ namespace ms_v1
             }
         }
 
+        /// <summary>
+        /// clears all blank playingField buttons, if an button with no number (hint) is exposed
+        /// </summary>
+        /// <param name="sender">the playingfieldcoverup button</param>
         private void clearBlanks(Button sender) 
         {
             Point coordinates = getCoordinates(sender);
@@ -367,35 +375,38 @@ namespace ms_v1
                     {
                         if (playingFieldCoverUp[column + 1, row].Visible)
                         {
-                            playingFieldCoverUp[column + 1, row].Visible = false;
-                            if (playingField[column + 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                blanks.Add(new Point(column + 1, row));
+                            if (playingFieldCoverUp[column + 1, row].Text.Equals(String.Empty))
+                            {
+                                playingFieldCoverUp[column + 1, row].Visible = false;
+                                if (playingField[column + 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column + 1, row));
+                            }
                         }
-                        //if (playingField[column + 1, row].Text.Equals(String.Empty) && !blanks.Contains(playingField[column + 1, row]))
-                        //    blanks.Add(playingField[column + 1, row]);
 
                         if (row + 1 < playingFieldHeight)
                         {
                             if (playingFieldCoverUp[column + 1, row + 1].Visible)
                             {
-                                playingFieldCoverUp[column + 1, row + 1].Visible = false;
-                                if (playingField[column + 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                    blanks.Add(new Point(column + 1, row + 1));
+                                if (playingFieldCoverUp[column + 1, row + 1].Text.Equals(String.Empty))
+                                {
+                                    playingFieldCoverUp[column + 1, row + 1].Visible = false;
+                                    if (playingField[column + 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                        blanks.Add(new Point(column + 1, row + 1));
+                                }
                             }
-                            //if (playingField[column + 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column + 1, row + 1]))
-                            //    blanks.Add(playingField[column + 1, row + 1]);
                         }
 
                         if (row - 1 >= 0)
                         {
                             if (playingFieldCoverUp[column + 1, row - 1].Visible)
                             {
-                                playingFieldCoverUp[column + 1, row - 1].Visible = false;
-                                if (playingField[column + 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                    blanks.Add(new Point(column + 1, row - 1));
+                                if (playingFieldCoverUp[column + 1, row - 1].Text.Equals(String.Empty))
+                                {
+                                    playingFieldCoverUp[column + 1, row - 1].Visible = false;
+                                    if (playingField[column + 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                        blanks.Add(new Point(column + 1, row - 1));
+                                }
                             }
-                            //if (playingField[column + 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column + 1, row - 1]))
-                            //    blanks.Add(playingField[column + 1, row - 1]);
                         }
                     }
 
@@ -403,35 +414,38 @@ namespace ms_v1
                     {
                         if (playingFieldCoverUp[column - 1, row].Visible)
                         {
-                            playingFieldCoverUp[column - 1, row].Visible = false;
-                            if (playingField[column - 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                blanks.Add(new Point(column - 1, row));
+                            if (playingFieldCoverUp[column - 1, row].Text.Equals(String.Empty))
+                            {
+                                playingFieldCoverUp[column - 1, row].Visible = false;
+                                if (playingField[column - 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column - 1, row));
+                            }
                         }
-                        //if (playingField[column - 1, row].Text.Equals(String.Empty) && !blanks.Contains(playingField[column - 1, row]))
-                        //    blanks.Add(playingField[column - 1, row]);
 
                         if (row + 1 < playingFieldHeight)
                         {
                             if (playingFieldCoverUp[column - 1, row + 1].Visible)
                             {
-                                playingFieldCoverUp[column - 1, row + 1].Visible = false;
-                                if (playingField[column - 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                    blanks.Add(new Point(column - 1, row + 1));
+                                if (playingFieldCoverUp[column - 1, row + 1].Text.Equals(String.Empty))
+                                {
+                                    playingFieldCoverUp[column - 1, row + 1].Visible = false;
+                                    if (playingField[column - 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                        blanks.Add(new Point(column - 1, row + 1));
+                                }
                             }
-                            //if (playingField[column - 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column - 1, row + 1]))
-                            //    blanks.Add(playingField[column - 1, row + 1]);
                         }
 
                         if (row - 1 >= 0)
                         {
                             if (playingFieldCoverUp[column - 1, row - 1].Visible)
                             {
-                                playingFieldCoverUp[column - 1, row - 1].Visible = false;
-                                if (playingField[column - 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                    blanks.Add(new Point(column - 1, row - 1));
+                                if (playingFieldCoverUp[column - 1, row - 1].Text.Equals(String.Empty))
+                                {
+                                    playingFieldCoverUp[column - 1, row - 1].Visible = false;
+                                    if (playingField[column - 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                        blanks.Add(new Point(column - 1, row - 1));
+                                }
                             }
-                            //if (playingField[column - 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column - 1, row - 1]))
-                            //    blanks.Add(playingField[column - 1, row - 1]);
                         }
                     }
 
@@ -439,30 +453,37 @@ namespace ms_v1
                     {
                         if (playingFieldCoverUp[column, row + 1].Visible)
                         {
-                            playingFieldCoverUp[column, row + 1].Visible = false;
-                            if (playingField[column, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                blanks.Add(new Point(column, row + 1));
+                            if (playingFieldCoverUp[column, row + 1].Text.Equals(String.Empty))
+                            {
+                                playingFieldCoverUp[column, row + 1].Visible = false;
+                                if (playingField[column, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column, row + 1));
+                            }
                         }
-                        //if (playingField[column, row + 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column, row + 1]))
-                        //    blanks.Add(playingField[column, row + 1]);
                     }
 
                     if (row - 1 >= 0)
                     {
                         if (playingFieldCoverUp[column, row - 1].Visible)
                         {
-                            playingFieldCoverUp[column, row - 1].Visible = false;
-                            if (playingField[column, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
-                                blanks.Add(new Point(column, row - 1));
+                            if (playingFieldCoverUp[column, row - 1].Text.Equals(String.Empty))
+                            {
+                                playingFieldCoverUp[column, row - 1].Visible = false;
+                                if (playingField[column, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    blanks.Add(new Point(column, row - 1));
+                            }
                         }
-                        //if (playingField[column, row - 1].Text.Equals(String.Empty) && !blanks.Contains(playingField[column, row - 1]))
-                        //    blanks.Add(playingField[column, row - 1]);
                     }
                 }
 
             } while (blanks.Count > 0);
         }
 
+        /// <summary>
+        /// get the array cooridnates (column, row) of a butten object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>the coordinates</returns>
         private Point getCoordinates(Button obj)
         {
             Point p = new Point();
@@ -490,7 +511,14 @@ namespace ms_v1
                 for (int column = 0; column < playingFieldWidth; column++)
                 {
                     if (playingField[column, row].Text.Equals(mineCharacter.ToString()) && !playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
+                    {
                         playingFieldCoverUp[column, row].Visible = false;
+                    }
+
+                    if (playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()) && !playingField[column, row].Text.Equals(mineCharacter.ToString()))
+                    {
+                        playingFieldCoverUp[column, row].Text = falseMine.ToString();
+                    }
                 }
             }
         }
@@ -502,8 +530,7 @@ namespace ms_v1
         /// <param name="e"></param>
         private void btnStart_Click(Object sender, EventArgs e)
         {
-            initGame(playingFieldHeight, playingFieldWidth, minesAmount);
-            //t1.Stop();
+            initGame(playingFieldHeight, playingFieldWidth, minesAmount, playingMode);
         }
 
         /// <summary>
