@@ -182,44 +182,44 @@ namespace ms_v1
                         if (minesCount != 0)
                         {
 
-                            //switch (minesCount)
-                            //{
-                            //    case 1:
-                            //        playingField[column, row].ForeColor = Color.Blue;
-                            //        break;
+                            switch (minesCount)
+                            {
+                                case 1:
+                                    playingField[column, row].ForeColor = Color.Blue;
+                                    break;
 
-                            //    case 2:
-                            //        playingField[column, row].ForeColor = Color.Green;
-                            //        break;
+                                case 2:
+                                    playingField[column, row].ForeColor = Color.Green;
+                                    break;
 
-                            //    case 3:
-                            //        playingField[column, row].ForeColor = Color.Red;
-                            //        break;
+                                case 3:
+                                    playingField[column, row].ForeColor = Color.Red;
+                                    break;
 
-                            //    case 4:
-                            //        playingField[column, row].ForeColor = Color.DarkBlue;
-                            //        break;
+                                case 4:
+                                    playingField[column, row].ForeColor = Color.DarkBlue;
+                                    break;
 
-                            //    case 5:
-                            //        playingField[column, row].ForeColor = Color.DarkRed;
-                            //        break;
+                                case 5:
+                                    playingField[column, row].ForeColor = Color.DarkRed;
+                                    break;
 
-                            //    case 6:
-                            //        playingField[column, row].ForeColor = Color.Cyan;
-                            //        break;
+                                case 6:
+                                    playingField[column, row].ForeColor = Color.Cyan;
+                                    break;
 
-                            //    case 7:
-                            //        playingField[column, row].ForeColor = Color.Purple;
-                            //        break;
+                                case 7:
+                                    playingField[column, row].ForeColor = Color.Purple;
+                                    break;
 
-                            //    case 8:
-                            //        playingField[column, row].ForeColor = Color.YellowGreen;
-                            //        break;
-                            //}
+                                case 8:
+                                    playingField[column, row].ForeColor = Color.YellowGreen;
+                                    break;
+                            }
 
                             playingField[column, row].Text = minesCount.ToString();
-                            //playingField[column, row].Enabled = true;
-                            //playingField[column, row].BackColor = Color.LightGray;
+                            playingField[column, row].Enabled = true;
+                            playingField[column, row].BackColor = Color.LightGray;
                         }
                     }
                 }
@@ -273,7 +273,7 @@ namespace ms_v1
                     btn.Name = "btn" + column + "_"+ row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
-                    //btn.MouseDown += new MouseEventHandler(btnPlayingField_Click);
+                    btn.MouseDown += new MouseEventHandler(btnPlayingField_Click);
 
                     panel.Controls.Add(btn);
                     playingField[column, row] = btn;
@@ -338,7 +338,13 @@ namespace ms_v1
                     {
                         //MessageBox.Show(obj.Text + "\n" + isAmountOfMinesMarked(obj));
                         bla(obj);
-                        clearBlanks(obj);
+                    }
+
+                    if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
+                    {
+                        //t1.Stop();
+                        score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000);
+                        MessageBox.Show("You're Won!\n\nScore: " + score);
                     }
                 }
             }
@@ -351,28 +357,60 @@ namespace ms_v1
             int row = p.Y;
 
             if (column - 1 >= 0 && !playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column - 1, row].Visible = false;
+                if (playingField[column - 1, row].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column - 1, row]);
+            }
 
             if (column + 1 < playingFieldWidth && !playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column + 1, row].Visible = false;
+                if (playingField[column + 1, row].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column + 1, row]);
+            }
 
             if (row - 1 >= 0 && !playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column, row - 1].Visible = false;
+                if (playingField[column, row - 1].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column, row - 1]);
+            }
 
             if (column - 1 >= 0 && row - 1 >= 0 && !playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column - 1, row - 1].Visible = false;
+                if (playingField[column - 1, row - 1].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column - 1, row - 1]);
+            }
 
-            if (column + 1 < playingFieldWidth && row - 1 > 0 && !playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+            if (column + 1 < playingFieldWidth && row - 1 >= 0 && !playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column + 1, row - 1].Visible = false;
+                if (playingField[column + 1, row - 1].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column + 1, row - 1]);
+            }
 
             if (row + 1 < playingFieldHeight && !playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column, row + 1].Visible = false;
+                if (playingField[column, row + 1].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column, row + 1]);
+            }
 
             if (column - 1 >= 0 && row + 1 < playingFieldHeight && !playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column - 1, row + 1].Visible = false;
+                if (playingField[column - 1, row + 1].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column - 1, row + 1]);
+            }
 
             if (column + 1 < playingFieldWidth && row + 1 < playingFieldHeight && !playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+            {
                 playingFieldCoverUp[column + 1, row + 1].Visible = false;
+                if (playingField[column + 1, row + 1].Text.Equals(String.Empty))
+                    clearBlanks(playingField[column + 1, row + 1]);
+            }
         }
 
         /// <summary>
@@ -402,7 +440,7 @@ namespace ms_v1
             if (column - 1 >= 0 && row - 1 >= 0 && playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
                 amount++;
 
-            if (column + 1 < playingFieldWidth && row - 1 > 0 && playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+            if (column + 1 < playingFieldWidth && row - 1 >= 0 && playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
                 amount++;
 
             if (row + 1 < playingFieldHeight && playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))

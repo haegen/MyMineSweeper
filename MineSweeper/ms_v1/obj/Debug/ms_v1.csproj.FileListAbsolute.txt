@@ -35,3 +35,13 @@ C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MineSweeper\ms_v1\obj\Deb
 C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.Properties.Resources.resources
 C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.csproj.GenerateResource.Cache
 C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MineSweeper\ms_v1\obj\Debug\ms_v1.SettingsForm.resources
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\bin\Debug\ms_v1.exe.config
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.exe
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.pdb
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\bin\Debug\ms_v1.exe
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\bin\Debug\ms_v1.pdb
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.csprojResolveAssemblyReference.cache
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.MainForm.resources
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.Properties.Resources.resources
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.SettingsForm.resources
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.csproj.GenerateResource.Cache
