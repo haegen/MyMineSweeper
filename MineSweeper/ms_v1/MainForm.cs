@@ -340,6 +340,16 @@ namespace ms_v1
                         bla(obj);
                     }
 
+                    Point p = getCoordinates(obj);
+                    int column = p.X;
+                    int row = p.Y;
+                    if (playingField[column, row].Text.Equals(mineCharacter.ToString()) && obj.Text.Equals(String.Empty))
+                    {
+                        //t1.Stop();
+                        exposeAlleMines();
+                        gameOver = true;
+                    }
+
                     if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                     {
                         //t1.Stop();
