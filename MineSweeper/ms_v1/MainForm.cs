@@ -180,7 +180,47 @@ namespace ms_v1
                             minesCount++;
 
                         if (minesCount != 0)
+                        {
+
+                            //switch (minesCount)
+                            //{
+                            //    case 1:
+                            //        playingField[column, row].ForeColor = Color.Blue;
+                            //        break;
+
+                            //    case 2:
+                            //        playingField[column, row].ForeColor = Color.Green;
+                            //        break;
+
+                            //    case 3:
+                            //        playingField[column, row].ForeColor = Color.Red;
+                            //        break;
+
+                            //    case 4:
+                            //        playingField[column, row].ForeColor = Color.DarkBlue;
+                            //        break;
+
+                            //    case 5:
+                            //        playingField[column, row].ForeColor = Color.DarkRed;
+                            //        break;
+
+                            //    case 6:
+                            //        playingField[column, row].ForeColor = Color.Cyan;
+                            //        break;
+
+                            //    case 7:
+                            //        playingField[column, row].ForeColor = Color.Purple;
+                            //        break;
+
+                            //    case 8:
+                            //        playingField[column, row].ForeColor = Color.YellowGreen;
+                            //        break;
+                            //}
+
                             playingField[column, row].Text = minesCount.ToString();
+                            //playingField[column, row].Enabled = true;
+                            //playingField[column, row].BackColor = Color.LightGray;
+                        }
                     }
                 }
             }
@@ -233,6 +273,7 @@ namespace ms_v1
                     btn.Name = "btn" + column + "_"+ row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
+                    //btn.MouseDown += new MouseEventHandler(btnPlayingField_Click);
 
                     panel.Controls.Add(btn);
                     playingField[column, row] = btn;
@@ -266,7 +307,7 @@ namespace ms_v1
                     btn.Name = "btn" + column + "_" + row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
-                    btn.MouseDown += new MouseEventHandler(btn_Click);
+                    btn.MouseDown += new MouseEventHandler(btnPlayingFieldCoverUp_Click);
 
                     panel.Controls.Add(btn);
                     playingFieldCoverUp[column, row] = btn;
@@ -279,6 +320,107 @@ namespace ms_v1
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnPlayingField_Click(Object sender, MouseEventArgs e)
+        {
+            if (!gameOver)
+            {
+                Button obj = (Button)sender;
+
+                if (e.Button == MouseButtons.Middle)
+                {
+                    // TO DO:
+                    // - if the right amount of adjacent mines are marked expose all surrounding buttons which are not marked as mines
+                    if (isAmountOfMinesMarked(obj))
+                    {
+                        //MessageBox.Show(obj.Text + "\n" + isAmountOfMinesMarked(obj));
+                        bla(obj);
+                        clearBlanks(obj);
+                    }
+                }
+            }
+        }
+
+        private void bla(Button obj)
+        {
+            Point p = getCoordinates(obj);
+            int column = p.X;
+            int row = p.Y;
+
+            if (column - 1 >= 0 && !playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column - 1, row].Visible = false;
+
+            if (column + 1 < playingFieldWidth && !playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column + 1, row].Visible = false;
+
+            if (row - 1 >= 0 && !playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column, row - 1].Visible = false;
+
+            if (column - 1 >= 0 && row - 1 >= 0 && !playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column - 1, row - 1].Visible = false;
+
+            if (column + 1 < playingFieldWidth && row - 1 > 0 && !playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column + 1, row - 1].Visible = false;
+
+            if (row + 1 < playingFieldHeight && !playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column, row + 1].Visible = false;
+
+            if (column - 1 >= 0 && row + 1 < playingFieldHeight && !playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column - 1, row + 1].Visible = false;
+
+            if (column + 1 < playingFieldWidth && row + 1 < playingFieldHeight && !playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                playingFieldCoverUp[column + 1, row + 1].Visible = false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private bool isAmountOfMinesMarked(Button obj)
+        {
+            bool isAmountOfMinesMarked = false;
+
+            Point p = getCoordinates(obj);
+            int column = p.X;
+            int row = p.Y;
+
+            int amount = 0;
+
+            if (column - 1 >= 0 && playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (column + 1 < playingFieldWidth && playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (row - 1 >= 0 && playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (column - 1 >= 0 && row - 1 >= 0 && playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (column + 1 < playingFieldWidth && row - 1 > 0 && playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (row + 1 < playingFieldHeight && playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (column - 1 >= 0 && row + 1 < playingFieldHeight && playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (column + 1 < playingFieldWidth && row + 1 < playingFieldHeight && playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                amount++;
+
+            if (obj.Text.Equals(amount.ToString()))
+                isAmountOfMinesMarked = true;
+
+            return isAmountOfMinesMarked;
+        }
+
+        /// <summary>
         /// button click event, which is triggerd by playing field cover up buttons
         /// right click -> sets the button text to '#' (the character spezified to a mine)
         /// left click -> sets the visibility of the button to false and checks if a mine was 'exposed'
@@ -287,7 +429,7 @@ namespace ms_v1
         /// </summary>
         /// <param name="sender">playing field cover up button</param>
         /// <param name="e">mouse event</param>
-        private void btn_Click(Object sender, MouseEventArgs e)
+        private void btnPlayingFieldCoverUp_Click(Object sender, MouseEventArgs e)
         {
             if (!gameOver)
             {
@@ -495,6 +637,7 @@ namespace ms_v1
                     {
                         p.X = column;
                         p.Y = row;
+                        return p;
                     }
                 }
             }
