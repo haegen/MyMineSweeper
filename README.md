@@ -1,4 +1,4 @@
-# MyMinesSweeper
+# MyMineSweeper
 just started to program minesweeper
 
 TO DO: 
