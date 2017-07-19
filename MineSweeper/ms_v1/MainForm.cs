@@ -155,29 +155,53 @@ namespace ms_v1
 
                     if (!playingField[column, row].Text.Equals(mineCharacter.ToString()))
                     {
-                        if (column - 1 >= 0 && playingField[column - 1, row].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
+                        if (column - 1 >= 0)
+                        {
+                            if (playingField[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                                minesCount++;
 
-                        if (column + 1 < playingFieldWidth && playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
+                            if (row - 1 >= 0)
+                            {
+                                if (playingField[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                                    minesCount++;
+                            }
 
-                        if (row - 1 >= 0 && playingField[column, row - 1].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
+                            if (row + 1 < playingFieldHeight)
+                            {
+                                if (playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                                    minesCount++;
+                            }
+                        }
 
-                        if (row - 1 >= 0 && column - 1 >= 0 && playingField[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
+                        if (column + 1 < playingFieldWidth)
+                        {
+                            if (playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                                minesCount++;
 
-                        if (row - 1 >= 0 && column + 1 < playingFieldWidth && playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
+                            if (row - 1 >= 0)
+                            {
+                                if (playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                                    minesCount++;
+                            }
 
-                        if (row + 1 < playingFieldHeight && playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
-
-                        if (row + 1 < playingFieldHeight && column - 1 >= 0 && playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
-
-                        if (row + 1 < playingFieldHeight && column + 1 < playingFieldWidth && playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
-                            minesCount++;
+                            if (row + 1 < playingFieldHeight)
+                            {
+                                if (playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                                    minesCount++;
+                            }
+                        }
+                        
+                        if (row - 1 >= 0)
+                        {
+                            if (playingField[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                                minesCount++;
+                        }
+                        
+                        if (row + 1 < playingFieldHeight)
+                        {
+                            if (playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                                minesCount++;
+                        }
 
                         if (minesCount != 0)
                         {
@@ -332,11 +356,8 @@ namespace ms_v1
 
                 if (e.Button == MouseButtons.Middle)
                 {
-                    // TO DO:
-                    // - if the right amount of adjacent mines are marked expose all surrounding buttons which are not marked as mines
                     if (isAmountOfMinesMarked(obj))
                     {
-                        //MessageBox.Show(obj.Text + "\n" + isAmountOfMinesMarked(obj));
                         bla(obj);
                     }
 
@@ -356,60 +377,140 @@ namespace ms_v1
             int column = p.X;
             int row = p.Y;
 
-            if (column - 1 >= 0 && !playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
+            if (column - 1 >= 0)
             {
-                playingFieldCoverUp[column - 1, row].Visible = false;
-                if (playingField[column - 1, row].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column - 1, row]);
+                if (!playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                {
+                    playingFieldCoverUp[column - 1, row].Visible = false;
+                    if (playingField[column - 1, row].Text.Equals(String.Empty))
+                        clearBlanks(playingField[column - 1, row]);
+
+                    if (playingField[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                    {
+                        //t1.Stop();
+                        exposeAlleMines();
+                        gameOver = true;
+                    }
+                }
+
+                if (row - 1 >= 0)
+                {
+                    if (!playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                    {
+                        playingFieldCoverUp[column - 1, row - 1].Visible = false;
+                        if (playingField[column - 1, row - 1].Text.Equals(String.Empty))
+                            clearBlanks(playingField[column - 1, row - 1]);
+
+                        if (playingField[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                        {
+                            //t1.Stop();
+                            exposeAlleMines();
+                            gameOver = true;
+                        }
+                    }
+                }
+
+                if (row + 1 < playingFieldHeight)
+                {
+                    if (!playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                    {
+                        playingFieldCoverUp[column - 1, row + 1].Visible = false;
+                        if (playingField[column - 1, row + 1].Text.Equals(String.Empty))
+                            clearBlanks(playingField[column - 1, row + 1]);
+
+                        if (playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                        {
+                            //t1.Stop();
+                            exposeAlleMines();
+                            gameOver = true;
+                        }
+                    }
+                }
             }
 
-            if (column + 1 < playingFieldWidth && !playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
+            if (column + 1 < playingFieldWidth)
             {
-                playingFieldCoverUp[column + 1, row].Visible = false;
-                if (playingField[column + 1, row].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column + 1, row]);
+                if (!playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                {
+                    playingFieldCoverUp[column + 1, row].Visible = false;
+                    if (playingField[column + 1, row].Text.Equals(String.Empty))
+                        clearBlanks(playingField[column + 1, row]);
+
+                    if (playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                    {
+                        //t1.Stop();
+                        exposeAlleMines();
+                        gameOver = true;
+                    }
+                }
+
+                if (row - 1 >= 0)
+                {
+                    if (!playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                    {
+                        playingFieldCoverUp[column + 1, row - 1].Visible = false;
+                        if (playingField[column + 1, row - 1].Text.Equals(String.Empty))
+                            clearBlanks(playingField[column + 1, row - 1]);
+
+                        if (playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                        {
+                            //t1.Stop();
+                            exposeAlleMines();
+                            gameOver = true;
+                        }
+                    }
+                }
+
+                if (row + 1 < playingFieldHeight)
+                {
+                    if (!playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                    {
+                        playingFieldCoverUp[column + 1, row + 1].Visible = false;
+                        if (playingField[column + 1, row + 1].Text.Equals(String.Empty))
+                            clearBlanks(playingField[column + 1, row + 1]);
+
+                        if (playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                        {
+                            //t1.Stop();
+                            exposeAlleMines();
+                            gameOver = true;
+                        }
+                    }
+                }
             }
 
-            if (row - 1 >= 0 && !playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
+            if (row - 1 >= 0)
             {
-                playingFieldCoverUp[column, row - 1].Visible = false;
-                if (playingField[column, row - 1].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column, row - 1]);
+                if (!playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                {
+                    playingFieldCoverUp[column, row - 1].Visible = false;
+                    if (playingField[column, row - 1].Text.Equals(String.Empty))
+                        clearBlanks(playingField[column, row - 1]);
+
+                    if (playingField[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                    {
+                        //t1.Stop();
+                        exposeAlleMines();
+                        gameOver = true;
+                    }
+                }
             }
 
-            if (column - 1 >= 0 && row - 1 >= 0 && !playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+            if (row + 1 < playingFieldHeight)
             {
-                playingFieldCoverUp[column - 1, row - 1].Visible = false;
-                if (playingField[column - 1, row - 1].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column - 1, row - 1]);
-            }
+                if (!playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                {
+                    playingFieldCoverUp[column, row + 1].Visible = false;
+                    if (playingField[column, row + 1].Text.Equals(String.Empty))
+                        clearBlanks(playingField[column, row + 1]);
 
-            if (column + 1 < playingFieldWidth && row - 1 >= 0 && !playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
-            {
-                playingFieldCoverUp[column + 1, row - 1].Visible = false;
-                if (playingField[column + 1, row - 1].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column + 1, row - 1]);
-            }
-
-            if (row + 1 < playingFieldHeight && !playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
-            {
-                playingFieldCoverUp[column, row + 1].Visible = false;
-                if (playingField[column, row + 1].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column, row + 1]);
-            }
-
-            if (column - 1 >= 0 && row + 1 < playingFieldHeight && !playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
-            {
-                playingFieldCoverUp[column - 1, row + 1].Visible = false;
-                if (playingField[column - 1, row + 1].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column - 1, row + 1]);
-            }
-
-            if (column + 1 < playingFieldWidth && row + 1 < playingFieldHeight && !playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
-            {
-                playingFieldCoverUp[column + 1, row + 1].Visible = false;
-                if (playingField[column + 1, row + 1].Text.Equals(String.Empty))
-                    clearBlanks(playingField[column + 1, row + 1]);
+                    if (playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                    {
+                        //t1.Stop();
+                        exposeAlleMines();
+                        gameOver = true;
+                    }
+                }
             }
         }
 
@@ -428,29 +529,53 @@ namespace ms_v1
 
             int amount = 0;
 
-            if (column - 1 >= 0 && playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
-                amount++;
+            if (column - 1 >= 0)
+            {
+                if (playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                    amount++;
 
-            if (column + 1 < playingFieldWidth && playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
-                amount++;
+                if (row - 1 >= 0)
+                {
+                    if (playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                        amount++;
+                }
 
-            if (row - 1 >= 0 && playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
-                amount++;
+                if (row + 1 < playingFieldHeight)
+                {
+                    if (playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                        amount++;
+                }
+            }
 
-            if (column - 1 >= 0 && row - 1 >= 0 && playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
-                amount++;
+            if (column + 1 < playingFieldWidth)
+            {
+                if (playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                    amount++;
 
-            if (column + 1 < playingFieldWidth && row - 1 >= 0 && playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
-                amount++;
+                if (row - 1 >= 0)
+                {
+                    if (playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                        amount++;
+                }
 
-            if (row + 1 < playingFieldHeight && playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
-                amount++;
+                if (row + 1 < playingFieldHeight)
+                {
+                    if (playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                        amount++;
+                }
+            }
 
-            if (column - 1 >= 0 && row + 1 < playingFieldHeight && playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
-                amount++;
+            if (row - 1 >= 0)
+            {
+                if (playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                    amount++;
+            }
 
-            if (column + 1 < playingFieldWidth && row + 1 < playingFieldHeight && playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
-                amount++;
+            if (row + 1 < playingFieldHeight)
+            {
+                if (playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                    amount++;
+            }
 
             if (obj.Text.Equals(amount.ToString()))
                 isAmountOfMinesMarked = true;
