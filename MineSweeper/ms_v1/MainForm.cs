@@ -9,14 +9,6 @@ using System.Windows.Forms;
 
 namespace ms_v1
 {
-    /* 
-     * TO DO:
-     * - include images (mine, exploding mine, flag, questionmark, smilie face (restart button)
-     * - performance enhancement
-     * - save highscores
-     * - form size ajusted to screen size
-     */
-
     public partial class MainForm : Form
     {
         // playing field bounderies
@@ -67,7 +59,9 @@ namespace ms_v1
             this.Controls.Clear();
 
             if (t1 != null)
+            {
                 t1.Dispose();
+            }
 
             // initialize variables
             gameOver = false;
@@ -136,6 +130,7 @@ namespace ms_v1
             AddPlayingFieldCoverUp();
             AddPlayingField();
             DistributeMines();
+            //playingField[2, 2].Text = mineCharacter.ToString();
             DistributeHints();
            
             tbTimer.Text = sec.ToString();
@@ -158,49 +153,65 @@ namespace ms_v1
                         if (column - 1 >= 0)
                         {
                             if (playingField[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                            {
                                 minesCount++;
+                            }
 
                             if (row - 1 >= 0)
                             {
                                 if (playingField[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                                {
                                     minesCount++;
+                                }
                             }
 
                             if (row + 1 < playingFieldHeight)
                             {
                                 if (playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                                {
                                     minesCount++;
+                                }
                             }
                         }
 
                         if (column + 1 < playingFieldWidth)
                         {
                             if (playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                            {
                                 minesCount++;
+                            }
 
                             if (row - 1 >= 0)
                             {
                                 if (playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                                {
                                     minesCount++;
+                                }
                             }
 
                             if (row + 1 < playingFieldHeight)
                             {
                                 if (playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                                {
                                     minesCount++;
+                                }
                             }
                         }
                         
                         if (row - 1 >= 0)
                         {
                             if (playingField[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                            {
                                 minesCount++;
+                            }
                         }
                         
                         if (row + 1 < playingFieldHeight)
                         {
                             if (playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                            {
                                 minesCount++;
+                            }
                         }
 
                         if (minesCount != 0)
@@ -243,7 +254,7 @@ namespace ms_v1
 
                             playingField[column, row].Text = minesCount.ToString();
                             playingField[column, row].Enabled = true;
-                            playingField[column, row].BackColor = Color.LightGray;
+                            playingField[column, row].BackColor = Color.DarkGray;
                         }
                     }
                 }
@@ -261,7 +272,9 @@ namespace ms_v1
             while (true)
             {
                 if (minesCount == minesAmount)
+                {
                     break;
+                }
 
                 int row = rnd.Next(0, playingFieldHeight);
                 int column = rnd.Next(0, playingFieldWidth);
@@ -297,6 +310,7 @@ namespace ms_v1
                     btn.Name = "btn" + column + "_"+ row;
                     btn.TextAlign = ContentAlignment.MiddleCenter;
                     btn.Font = new Font(btn.Font.Name, btn.Font.Size, FontStyle.Bold);
+                    btn.BackColor = Color.DarkGray;
                     btn.MouseDown += new MouseEventHandler(btnPlayingField_Click);
 
                     panel.Controls.Add(btn);
@@ -371,6 +385,7 @@ namespace ms_v1
             }
         }
 
+        // buggy
         private void bla(Button obj)
         {
             Point p = getCoordinates(obj);
@@ -383,7 +398,9 @@ namespace ms_v1
                 {
                     playingFieldCoverUp[column - 1, row].Visible = false;
                     if (playingField[column - 1, row].Text.Equals(String.Empty))
+                    {
                         clearBlanks(playingField[column - 1, row]);
+                    }
 
                     if (playingField[column - 1, row].Text.Equals(mineCharacter.ToString()))
                     {
@@ -397,7 +414,9 @@ namespace ms_v1
                     {
                         playingFieldCoverUp[column - 1, row - 1].Visible = false;
                         if (playingField[column - 1, row - 1].Text.Equals(String.Empty))
+                        {
                             clearBlanks(playingField[column - 1, row - 1]);
+                        }
 
                         if (playingField[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
                         {
@@ -412,7 +431,9 @@ namespace ms_v1
                     {
                         playingFieldCoverUp[column - 1, row + 1].Visible = false;
                         if (playingField[column - 1, row + 1].Text.Equals(String.Empty))
+                        {
                             clearBlanks(playingField[column - 1, row + 1]);
+                        }
 
                         if (playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
                         {
@@ -428,7 +449,9 @@ namespace ms_v1
                 {
                     playingFieldCoverUp[column + 1, row].Visible = false;
                     if (playingField[column + 1, row].Text.Equals(String.Empty))
+                    {
                         clearBlanks(playingField[column + 1, row]);
+                    }
 
                     if (playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
                     {
@@ -442,7 +465,9 @@ namespace ms_v1
                     {
                         playingFieldCoverUp[column + 1, row - 1].Visible = false;
                         if (playingField[column + 1, row - 1].Text.Equals(String.Empty))
+                        {
                             clearBlanks(playingField[column + 1, row - 1]);
+                        }
 
                         if (playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
                         {
@@ -457,7 +482,9 @@ namespace ms_v1
                     {
                         playingFieldCoverUp[column + 1, row + 1].Visible = false;
                         if (playingField[column + 1, row + 1].Text.Equals(String.Empty))
+                        {
                             clearBlanks(playingField[column + 1, row + 1]);
+                        }
 
                         if (playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
                         {
@@ -473,7 +500,9 @@ namespace ms_v1
                 {
                     playingFieldCoverUp[column, row - 1].Visible = false;
                     if (playingField[column, row - 1].Text.Equals(String.Empty))
+                    {
                         clearBlanks(playingField[column, row - 1]);
+                    }
 
                     if (playingField[column, row - 1].Text.Equals(mineCharacter.ToString()))
                     {
@@ -488,7 +517,9 @@ namespace ms_v1
                 {
                     playingFieldCoverUp[column, row + 1].Visible = false;
                     if (playingField[column, row + 1].Text.Equals(String.Empty))
+                    {
                         clearBlanks(playingField[column, row + 1]);
+                    }
 
                     if (playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
                     {
@@ -516,53 +547,71 @@ namespace ms_v1
             if (column - 1 >= 0)
             {
                 if (playingFieldCoverUp[column - 1, row].Text.Equals(mineCharacter.ToString()))
+                {
                     amount++;
+                }
 
                 if (row - 1 >= 0)
                 {
                     if (playingFieldCoverUp[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                    {
                         amount++;
+                    }
                 }
 
                 if (row + 1 < playingFieldHeight)
                 {
                     if (playingFieldCoverUp[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                    {
                         amount++;
+                    }
                 }
             }
 
             if (column + 1 < playingFieldWidth)
             {
                 if (playingFieldCoverUp[column + 1, row].Text.Equals(mineCharacter.ToString()))
+                {
                     amount++;
+                }
 
                 if (row - 1 >= 0)
                 {
                     if (playingFieldCoverUp[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
+                    {
                         amount++;
+                    }
                 }
 
                 if (row + 1 < playingFieldHeight)
                 {
                     if (playingFieldCoverUp[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
+                    {
                         amount++;
+                    }
                 }
             }
 
             if (row - 1 >= 0)
             {
                 if (playingFieldCoverUp[column, row - 1].Text.Equals(mineCharacter.ToString()))
+                {
                     amount++;
+                }
             }
 
             if (row + 1 < playingFieldHeight)
             {
                 if (playingFieldCoverUp[column, row + 1].Text.Equals(mineCharacter.ToString()))
+                {
                     amount++;
+                }
             }
 
             if (obj.Text.Equals(amount.ToString()))
+            {
                 isAmountOfMinesMarked = true;
+            }
 
             return isAmountOfMinesMarked;
         }
@@ -628,7 +677,7 @@ namespace ms_v1
                 if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                 {
                     t1.Stop();
-                    score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000);
+                    score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000 * playingMode);
                     MessageBox.Show("You're Won!\n\nScore: " + score);
                 }
             }
@@ -666,7 +715,9 @@ namespace ms_v1
                             {
                                 playingFieldCoverUp[column + 1, row].Visible = false;
                                 if (playingField[column + 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                {
                                     blanks.Add(new Point(column + 1, row));
+                                }
                             }
                         }
 
@@ -678,7 +729,9 @@ namespace ms_v1
                                 {
                                     playingFieldCoverUp[column + 1, row + 1].Visible = false;
                                     if (playingField[column + 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    {
                                         blanks.Add(new Point(column + 1, row + 1));
+                                    }
                                 }
                             }
                         }
@@ -691,7 +744,9 @@ namespace ms_v1
                                 {
                                     playingFieldCoverUp[column + 1, row - 1].Visible = false;
                                     if (playingField[column + 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    {
                                         blanks.Add(new Point(column + 1, row - 1));
+                                    }
                                 }
                             }
                         }
@@ -705,7 +760,9 @@ namespace ms_v1
                             {
                                 playingFieldCoverUp[column - 1, row].Visible = false;
                                 if (playingField[column - 1, row].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                {
                                     blanks.Add(new Point(column - 1, row));
+                                }
                             }
                         }
 
@@ -717,7 +774,9 @@ namespace ms_v1
                                 {
                                     playingFieldCoverUp[column - 1, row + 1].Visible = false;
                                     if (playingField[column - 1, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    {
                                         blanks.Add(new Point(column - 1, row + 1));
+                                    }
                                 }
                             }
                         }
@@ -730,7 +789,9 @@ namespace ms_v1
                                 {
                                     playingFieldCoverUp[column - 1, row - 1].Visible = false;
                                     if (playingField[column - 1, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                    {
                                         blanks.Add(new Point(column - 1, row - 1));
+                                    }
                                 }
                             }
                         }
@@ -744,7 +805,9 @@ namespace ms_v1
                             {
                                 playingFieldCoverUp[column, row + 1].Visible = false;
                                 if (playingField[column, row + 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                {
                                     blanks.Add(new Point(column, row + 1));
+                                }
                             }
                         }
                     }
@@ -757,7 +820,9 @@ namespace ms_v1
                             {
                                 playingFieldCoverUp[column, row - 1].Visible = false;
                                 if (playingField[column, row - 1].Text.Equals(String.Empty) && !blanks.Contains(coordinates))
+                                {
                                     blanks.Add(new Point(column, row - 1));
+                                }
                             }
                         }
                     }
@@ -798,14 +863,17 @@ namespace ms_v1
             {
                 for (int column = 0; column < playingFieldWidth; column++)
                 {
-                    if (playingField[column, row].Text.Equals(mineCharacter.ToString()) && !playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
-                    {
-                        playingFieldCoverUp[column, row].Visible = false;
-                    }
-
                     if (playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()) && !playingField[column, row].Text.Equals(mineCharacter.ToString()))
                     {
                         playingFieldCoverUp[column, row].Text = falseMine.ToString();
+                    }
+
+                    if (playingField[column, row].Text.Equals(mineCharacter.ToString()) && !playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
+                    {
+                        //if (!playingFieldCoverUp[column, row].Text.Equals(falseMine.ToString()))
+                        //{
+                            playingFieldCoverUp[column, row].Visible = false;
+                        //}
                     }
                 }
             }
@@ -841,9 +909,13 @@ namespace ms_v1
                         if (playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
                         {
                             if (playingField[column, row].Text.Equals(mineCharacter.ToString()))
+                            {
                                 winner = true;
+                            }
                             else
+                            {
                                 return false;
+                            }
                         }
                     }
                 }
@@ -865,9 +937,13 @@ namespace ms_v1
                 for (int column = 0; column < playingFieldWidth; column++)
                 {
                     if (playingFieldCoverUp[column, row].Visible && !playingFieldCoverUp[column, row].Text.Equals(mineCharacter.ToString()))
+                    {
                         return false;
+                    }
                     else
+                    {
                         isVisibleAndNotMarked = true;
+                    }
                 }
             }
 
