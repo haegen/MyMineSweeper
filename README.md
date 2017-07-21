@@ -6,3 +6,5 @@ TO DO:
   - save highscores (.xml or .txt)
   
   - performance enhancement
+  
+  - multiplayer (?)
