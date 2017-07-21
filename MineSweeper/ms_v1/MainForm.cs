@@ -10,14 +10,11 @@ using System.Windows.Forms;
 namespace ms_v1
 {
     /* 
-     * TO DO: 
-     * - clear method if no mine around (see original minesweeper)
-     * - add menue to select dificulty (beginner, intermediate, expert, custom)
-     * - dynamic form size (or dynamic button/ panel size)
-     * - highscores
-     * - timer
-     * - include images (mine, exploding mine, flag, questionmark, smilie face (restart button))
-     * - by clicking a number, and (a) mine(s) is/are marked -> expose all touching fields (optional)
+     * TO DO:
+     * - include images (mine, exploding mine, flag, questionmark, smilie face (restart button)
+     * - performance enhancement
+     * - save highscores
+     * - form size ajusted to screen size
      */
 
     public partial class MainForm : Form
@@ -102,7 +99,6 @@ namespace ms_v1
             t1 = new Timer();
             t1.Interval = 1000;
             t1.Tick += new EventHandler(t1_Tick);
-            t1.Stop();
 
             // evtl in andere methode auslagern
             btnStart = new Button();
