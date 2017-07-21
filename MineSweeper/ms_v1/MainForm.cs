@@ -378,7 +378,7 @@ namespace ms_v1
                     if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                     {
                         t1.Stop();
-                        score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000);
+                        score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000 * playingMode);
                         MessageBox.Show("You're Won!\n\nScore: " + score);
                     }
                 }
