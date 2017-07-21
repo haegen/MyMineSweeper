@@ -46,3 +46,4 @@ C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patc
 C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.SettingsForm.resources
 C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-haegen-patch-2\MineSweeper\ms_v1\obj\Debug\ms_v1.csproj.GenerateResource.Cache
 C:\Users\d3rn3g4\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.SettingsForm.resources
+C:\Users\Timper\Documents\Visual Studio 2015\Projects\MyMinesSweeper-master\MyMinesSweeper-master\MineSweeper\ms_v1\obj\Debug\ms_v1.SettingsForm.resources
