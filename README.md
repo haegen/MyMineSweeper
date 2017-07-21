@@ -8,3 +8,5 @@ TO DO:
   - performance enhancement
   
   - multiplayer (?)
+
+  - different play mode's (?)
