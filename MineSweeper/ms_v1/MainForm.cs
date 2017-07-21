@@ -69,6 +69,9 @@ namespace ms_v1
         {
             this.Controls.Clear();
 
+            if (t1 != null)
+                t1.Dispose();
+
             // initialize variables
             gameOver = false;
             markedMines = 0;
@@ -99,6 +102,7 @@ namespace ms_v1
             t1 = new Timer();
             t1.Interval = 1000;
             t1.Tick += new EventHandler(t1_Tick);
+            t1.Stop();
 
             // evtl in andere methode auslagern
             btnStart = new Button();
@@ -363,7 +367,7 @@ namespace ms_v1
 
                     if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                     {
-                        //t1.Stop();
+                        t1.Stop();
                         score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000);
                         MessageBox.Show("You're Won!\n\nScore: " + score);
                     }
@@ -387,9 +391,7 @@ namespace ms_v1
 
                     if (playingField[column - 1, row].Text.Equals(mineCharacter.ToString()))
                     {
-                        //t1.Stop();
                         exposeAlleMines();
-                        gameOver = true;
                     }
                 }
 
@@ -403,9 +405,7 @@ namespace ms_v1
 
                         if (playingField[column - 1, row - 1].Text.Equals(mineCharacter.ToString()))
                         {
-                            //t1.Stop();
                             exposeAlleMines();
-                            gameOver = true;
                         }
                     }
                 }
@@ -420,9 +420,7 @@ namespace ms_v1
 
                         if (playingField[column - 1, row + 1].Text.Equals(mineCharacter.ToString()))
                         {
-                            //t1.Stop();
                             exposeAlleMines();
-                            gameOver = true;
                         }
                     }
                 }
@@ -438,9 +436,7 @@ namespace ms_v1
 
                     if (playingField[column + 1, row].Text.Equals(mineCharacter.ToString()))
                     {
-                        //t1.Stop();
                         exposeAlleMines();
-                        gameOver = true;
                     }
                 }
 
@@ -454,9 +450,7 @@ namespace ms_v1
 
                         if (playingField[column + 1, row - 1].Text.Equals(mineCharacter.ToString()))
                         {
-                            //t1.Stop();
                             exposeAlleMines();
-                            gameOver = true;
                         }
                     }
                 }
@@ -471,9 +465,7 @@ namespace ms_v1
 
                         if (playingField[column + 1, row + 1].Text.Equals(mineCharacter.ToString()))
                         {
-                            //t1.Stop();
                             exposeAlleMines();
-                            gameOver = true;
                         }
                     }
                 }
@@ -489,9 +481,7 @@ namespace ms_v1
 
                     if (playingField[column, row - 1].Text.Equals(mineCharacter.ToString()))
                     {
-                        //t1.Stop();
                         exposeAlleMines();
-                        gameOver = true;
                     }
                 }
             }
@@ -506,9 +496,7 @@ namespace ms_v1
 
                     if (playingField[column, row + 1].Text.Equals(mineCharacter.ToString()))
                     {
-                        //t1.Stop();
                         exposeAlleMines();
-                        gameOver = true;
                     }
                 }
             }
@@ -596,7 +584,7 @@ namespace ms_v1
         {
             if (!gameOver)
             {
-                //t1.Start();
+                t1.Start();
                 Button obj = (Button)sender;
 
                 if (e.Button == MouseButtons.Right)
@@ -637,15 +625,13 @@ namespace ms_v1
                     int row = p.Y;
                     if (playingField[column, row].Text.Equals(mineCharacter.ToString()) && obj.Text.Equals(String.Empty))
                     {
-                        //t1.Stop();
                         exposeAlleMines();
-                        gameOver = true;
                     }
                 }
 
                 if (isWinner() && isAnyPlayingFieldCoverUpButtonVisibleAndNotMarked())
                 {
-                    //t1.Stop();
+                    t1.Stop();
                     score = (int)((double)minesAmount / Convert.ToInt32(tbTimer.Text) * 1000);
                     MessageBox.Show("You're Won!\n\nScore: " + score);
                 }
@@ -827,6 +813,9 @@ namespace ms_v1
                     }
                 }
             }
+
+            t1.Stop();
+            gameOver = true;
         }
         
         /// <summary>
